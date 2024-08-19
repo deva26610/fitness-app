@@ -10,6 +10,7 @@ import com.fitnessapp.repository.WorkoutSessionRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +45,8 @@ public class TrainerService {
     public void deleteWorkoutSession(Long id) {
         workoutSessionRepository.deleteById(id);
     }
+    
+    @Transactional
     public void deleteWorkoutSession(Long userId, Long workoutId) {
         workoutSessionRepository.deleteByUserIdAndWorkoutId(userId, workoutId);
     }

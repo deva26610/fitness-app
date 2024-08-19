@@ -1,6 +1,7 @@
 package com.fitnessapp.service;
 
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -31,7 +32,8 @@ public class ReportService {
     }
 
     public String generateMonthlyReport() {
-        LocalDateTime startOfMonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay();
+        LocalDate startOfMonthDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDateTime startOfMonth = startOfMonthDate.atStartOfDay();
         LocalDateTime endOfMonth = LocalDateTime.now();
 
         List<WorkoutSession> monthlySessions = workoutSessionRepository.findByStartTimeBetween(startOfMonth, endOfMonth);
@@ -45,7 +47,10 @@ public class ReportService {
         }
 
         int totalSessions = sessions.size();
-        int totalDuration = sessions.stream().mapToInt(session -> session.getEndTime().getMinute() - session.getStartTime().getMinute()).sum();
+        int totalDuration = sessions.stream()
+                .filter(session -> session.getEndTime() != null) // Filter out sessions without end time
+                .mapToInt(session -> Duration.between(session.getStartTime(), session.getEndTime()).toMinutesPart())
+                .sum();
 
         // Customize the report content as needed
         StringBuilder report = new StringBuilder();
@@ -57,7 +62,9 @@ public class ReportService {
         sessions.forEach(session -> {
             report.append("User: ").append(session.getUser().getUsername())
                   .append(", Workout: ").append(session.getWorkout().getName())
-                  .append(", Duration: ").append(session.getEndTime().getMinute() - session.getStartTime().getMinute()).append(" minutes\n");
+                  .append(", Duration: ")
+                  .append(session.getEndTime() != null ? Duration.between(session.getStartTime(), session.getEndTime()).toMinutes() : "In Progress")
+                  .append(" minutes\n");
         });
 
         return report.toString();
