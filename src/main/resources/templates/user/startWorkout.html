@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User - Start Workout</title>
+</head>
+<body>
+    <h1>Start Workout</h1>
+    <form th:action="@{/user/start}" method="post">
+        <input type="number" name="userId" placeholder="User ID" required>
+        <input type="number" name="workoutId" placeholder="Workout ID" required>
+        <button type="submit">Start Workout</button>
+    </form>
+</body>
+</html>

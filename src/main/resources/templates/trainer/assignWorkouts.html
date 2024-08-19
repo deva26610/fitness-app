@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Trainer - Assign Workouts</title>
+</head>
+<body>
+    <h1>Assign Workouts</h1>
+    <form th:action="@{/trainer/assign}" method="post">
+        <input type="number" name="userId" placeholder="User ID" required>
+        <input type="number" name="workoutId" placeholder="Workout ID" required>
+        <button type="submit">Assign Workout</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Workout ID</th>
+                <th>Workout Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="entry : ${workoutSessions}">
+                <td th:text="${entry.key.id}"></td>
+                <td th:text="${entry.key.username}"></td>
+                <td th:text="${entry.value.id}"></td>
+                <td th:text="${entry.value.name}"></td>
+                <td>
+                    <form th:action="@{/trainer/delete/{userId}/{workoutId}(userId=${entry.key.id},workoutId=${entry.value.id})}" method="post">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
